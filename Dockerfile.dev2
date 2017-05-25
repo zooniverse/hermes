@@ -1,0 +1,9 @@
+FROM python:2.7
+
+WORKDIR /usr/src/hermes
+
+COPY . .
+
+RUN pip install .
+
+ENTRYPOINT [ "hermes" ]

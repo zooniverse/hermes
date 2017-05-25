@@ -1,0 +1,18 @@
+version: '2'
+
+services:
+  dev:
+    build:
+      context:  ./
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ${HOME}/.hermes/:/root/.hermes/
+      - ${HOME}:${HOME}
+
+  stable:
+    build:
+      context: ./
+      dockerfile: Dockerfile.stable
+    volumes:
+      - ${HOME}/.hermes/:/root/.hermes/
+      - ${HOME}:${HOME}
