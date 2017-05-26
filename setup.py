@@ -16,6 +16,7 @@ setup(
         'docker',
         'paramiko',
         'boto',
+        'PyYAML',
     ],
     entry_points='''
         [console_scripts]
