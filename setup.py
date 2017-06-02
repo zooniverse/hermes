@@ -15,7 +15,7 @@ setup(
         'Click',
         'docker',
         'paramiko',
-        'boto',
+        'boto3',
         'PyYAML',
     ],
     entry_points='''

@@ -7,7 +7,17 @@ services:
       dockerfile: Dockerfile.dev
     volumes:
       - ${HOME}/.hermes/:/root/.hermes/
+      - ${HOME}/.aws/:/root/.aws/
+      - ${HOME}/.ssh/:/root/.ssh/
       - ${HOME}:${HOME}
+      - ${SSH_AUTH_SOCK}:${SSH_AUTH_SOCK}
+    environment:
+      - AWS_REGION=${AWS_REGION}
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+      - AWS_SESSION_TOKEN=${AWS_SESSION_TOKEN}
+      - AWS_SECURITY_TOKEN=${AWS_SECURITY_TOKEN}
+      - SSH_AUTH_SOCK=${SSH_AUTH_SOCK}
 
   stable:
     build:
@@ -15,4 +25,41 @@ services:
       dockerfile: Dockerfile.stable
     volumes:
       - ${HOME}/.hermes/:/root/.hermes/
+      - ${HOME}/.aws/:/root/.aws/
       - ${HOME}:${HOME}
+    environment:
+      - AWS_REGION=${AWS_REGION}
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+      - AWS_SESSION_TOKEN=${AWS_SESSION_TOKEN}
+      - AWS_SECURITY_TOKEN=${AWS_SECURITY_TOKEN}
+
+  dev2:
+    build:
+      context:  ./
+      dockerfile: Dockerfile.dev2
+    volumes:
+      - ${HOME}/.hermes/:/root/.hermes/
+      - ${HOME}/.aws/:/root/.aws/
+      - ${HOME}:${HOME}
+    environment:
+      - AWS_REGION=${AWS_REGION}
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+      - AWS_SESSION_TOKEN=${AWS_SESSION_TOKEN}
+      - AWS_SECURITY_TOKEN=${AWS_SECURITY_TOKEN}
+
+  stable2:
+    build:
+      context: ./
+      dockerfile: Dockerfile.stable2
+    volumes:
+      - ${HOME}/.hermes/:/root/.hermes/
+      - ${HOME}/.aws/:/root/.aws/
+      - ${HOME}:${HOME}
+    environment:
+      - AWS_REGION=${AWS_REGION}
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+      - AWS_SESSION_TOKEN=${AWS_SESSION_TOKEN}
+      - AWS_SECURITY_TOKEN=${AWS_SECURITY_TOKEN}
