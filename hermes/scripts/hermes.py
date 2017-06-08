@@ -27,3 +27,5 @@ def cli(ctx, region):
 
 
 from hermes.commands.configure import *
+from hermes.commands.deploy import *
+from hermes.commands.ls import *
