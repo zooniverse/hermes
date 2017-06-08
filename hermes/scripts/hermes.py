@@ -3,17 +3,16 @@ import os
 import click
 import yaml
 
+from hermes.manager import Manager
+
 
 @click.group()
-@click.option('--region', '-r', type=str)
 @click.pass_context
-def cli(ctx, region):
+def cli(ctx):
     ctx.config_dir = os.path.expanduser('~/.hermes/')
     ctx.config_file = os.path.join(ctx.config_dir, 'config.yml')
     ctx.config = {
-        'region': 'us-east-1',
-        'access_key_id': '',
-        'secret_access_key': '',
+        'ssh_key_filename': 'autodetect',
     }
 
     try:
@@ -22,10 +21,8 @@ def cli(ctx, region):
     except IOError:
         pass
 
-    if region:
-        ctx.config['region'] = region
+    Manager.configure(ctx.config)
 
 
 from hermes.commands.configure import *
-from hermes.commands.deploy import *
-from hermes.commands.ls import *
+from hermes.commands.exec_command import *
