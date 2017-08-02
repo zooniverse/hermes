@@ -2,8 +2,15 @@ FROM python:3
 
 WORKDIR /usr/src/hermes
 
-COPY . .
+RUN curl https://get.docker.com | bash -
+RUN pip install docker-compose
+
+COPY setup.py .
 
 RUN pip install .
+
+COPY . .
+
+RUN pip install -U .
 
 ENTRYPOINT [ "hermes" ]

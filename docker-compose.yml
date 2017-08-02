@@ -9,6 +9,8 @@ services:
       - ${HOME}/.hermes/:/root/.hermes/
       - ${HOME}/.aws/:/root/.aws/
       - ${HOME}/.ssh/:/root/.ssh/
+      - ${HOME}/.docker/:/root/.docker/
+      - ${HOME}/.dockercfg:/root/.dockercfg
       - ${HOME}:${HOME}
       - ${SSH_AUTH_SOCK}:${SSH_AUTH_SOCK}
     environment:
@@ -18,6 +20,7 @@ services:
       - AWS_SESSION_TOKEN=${AWS_SESSION_TOKEN}
       - AWS_SECURITY_TOKEN=${AWS_SECURITY_TOKEN}
       - SSH_AUTH_SOCK=${SSH_AUTH_SOCK}
+    working_dir: ${PWD}
 
   stable:
     build:
@@ -33,6 +36,7 @@ services:
       - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
       - AWS_SESSION_TOKEN=${AWS_SESSION_TOKEN}
       - AWS_SECURITY_TOKEN=${AWS_SECURITY_TOKEN}
+    working_dir: ${PWD}
 
   dev2:
     build:
@@ -48,6 +52,7 @@ services:
       - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
       - AWS_SESSION_TOKEN=${AWS_SESSION_TOKEN}
       - AWS_SECURITY_TOKEN=${AWS_SECURITY_TOKEN}
+    working_dir: ${PWD}
 
   stable2:
     build:
@@ -63,3 +68,4 @@ services:
       - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
       - AWS_SESSION_TOKEN=${AWS_SESSION_TOKEN}
       - AWS_SECURITY_TOKEN=${AWS_SECURITY_TOKEN}
+    working_dir: ${PWD}
