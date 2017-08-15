@@ -28,6 +28,12 @@ class Manager(object):
                     'manager',
                 ]
             },
+            {
+                'Name': 'instance-state-name',
+                'Values': [
+                    'running',
+                ]
+            },
         ]
         if cf_stack:
             filters.append({
