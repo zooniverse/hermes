@@ -98,7 +98,6 @@ class Manager(object):
             key_filename = None
 
         self.ssh_client = SSHClient()
-        self.ssh_client.load_system_host_keys()
         self.ssh_client.set_missing_host_key_policy(IgnorePolicy())
         self.ssh_client.connect(
             self.dns_name,
