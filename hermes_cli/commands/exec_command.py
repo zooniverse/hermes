@@ -2,8 +2,8 @@ import click
 import subprocess
 import sys
 
-from hermes.manager import Manager
-from hermes.scripts.hermes import cli
+from hermes_cli.manager import Manager
+from hermes_cli.scripts.hermes import cli
 
 
 @cli.command(name="exec")

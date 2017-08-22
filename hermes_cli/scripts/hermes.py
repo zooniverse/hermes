@@ -3,7 +3,7 @@ import os
 import click
 import yaml
 
-from hermes.manager import Manager
+from hermes_cli.manager import Manager
 
 
 @click.group()
@@ -24,5 +24,5 @@ def cli(ctx):
     Manager.configure(ctx.config)
 
 
-from hermes.commands.configure import *
-from hermes.commands.exec_command import *
+from hermes_cli.commands.configure import *
+from hermes_cli.commands.exec_command import *

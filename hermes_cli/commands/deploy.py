@@ -1,7 +1,7 @@
 import boto3
 import click
 
-from hermes.scripts.hermes import cli
+from hermes_cli.scripts.hermes import cli
 
 
 @cli.command()
