@@ -108,7 +108,7 @@ class Manager(object):
     def disconnect_ssh(self):
         self.ssh_client.close()
 
-    def exec(self, command, echo=True, echo_stdout=None, echo_stderr=None):
+    def execute(self, command, echo=True, echo_stdout=None, echo_stderr=None):
         if echo_stdout is None:
             echo_stdout = echo
         if echo_stderr is None:
@@ -142,9 +142,9 @@ class Manager(object):
         return status
 
     def install_socat(self):
-        if self.exec("socat -V", echo=False) > 0:
-            self.exec("sudo apk update")
-            self.exec("sudo apk add socat")
+        if self.execute("socat -V", echo=False) > 0:
+            self.execute("sudo apk update")
+            self.execute("sudo apk add socat")
         self._socat_installed = True
 
     def open_docker_socket(self):

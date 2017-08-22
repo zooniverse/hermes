@@ -6,10 +6,10 @@ from hermes.manager import Manager
 from hermes.scripts.hermes import cli
 
 
-@cli.command()
+@cli.command(name="exec")
 @click.argument('swarm-name', required=True)
 @click.argument('command', nargs=-1)
-def exec(swarm_name, command):
+def exec_command(swarm_name, command):
     with Manager.find(swarm_name):
         exec_result = subprocess.call(
             command,
