@@ -20,6 +20,6 @@ setup(
     ],
     entry_points='''
         [console_scripts]
-        hermes=hermes.scripts.hermes:cli
+        hermes=hermes_cli.scripts.hermes:cli
     ''',
 )

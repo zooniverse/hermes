@@ -3,7 +3,7 @@ import os
 import click
 import yaml
 
-from hermes.scripts.hermes import cli
+from hermes_cli.scripts.hermes import cli
 
 
 @cli.command()
