@@ -75,6 +75,7 @@ class Manager(object):
                 break
         self.dns_name = instance['PublicDnsName']
         self.ssh_client = None
+        self.docker_client = None
         self._socat_installed = False
         self._docker_listening = False
 
@@ -222,3 +223,80 @@ class Manager(object):
 
         if hasattr(self, 'server_channel'):
             self.server_channel.close()
+
+    def init_docker_client(self):
+        if not self._docker_listening:
+            self.open_docker_socket()
+        self.docker_client = docker.from_env()
+
+    @property
+    def docker(self):
+        if not self.docker_client:
+            self.init_docker_client()
+        return self.docker_client
+
+    def forward_port(
+        self,
+        localport,
+        networkname,
+        remotehost,
+        remoteport,
+    ):
+        def _recv_send(
+            side_a,
+            side_b,
+            cleanup_event,
+        ):
+            side_a.settimeout(1)
+            while not cleanup_event.is_set():
+                try:
+                    side_b.send(
+                        side_a.recv(1)
+                    )
+                except socket.timeout:
+                    continue
+                except OSError:
+                    cleanup_event.set()
+                    break
+            side_a.close()
+
+        def _accept_and_forward(listen_sock):
+            while True:
+                cleanup = threading.Event()
+
+                client_connection, _ = listen_sock.accept()
+
+                # We open an SSH channel and run the docker CLI here rather
+                # than using the docker python client, because the python
+                # client doesn't have an option to start a container and
+                # interactively attach to stdin/stdout.
+                self.server_transport = self.ssh_client.get_transport()
+                self.server_channel = self.server_transport.open_session()
+                self.server_channel.exec_command(
+                    "sudo socat UNIX-CONNECT:/home/docker/gateway.sock STDIO"
+                )
+
+                send_to_server_thread = threading.Thread(
+                    target=_recv_send,
+                    args=(client_connection, self.server_channel, cleanup),
+                    daemon=True,
+                )
+                send_to_server_thread.start()
+
+                send_to_client_thread = threading.Thread(
+                    target=_recv_send,
+                    args=(self.server_channel, client_connection, cleanup),
+                    daemon=True,
+                )
+                send_to_client_thread.start()
+
+        self.listen_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.listen_sock.bind(('127.0.0.1', localport))
+        self.listen_sock.listen()
+
+        accept_thread = threading.Thread(
+            target=_accept_and_forward,
+            args=(self.listen_sock,),
+            daemon=True,
+        )
+        accept_thread.start()

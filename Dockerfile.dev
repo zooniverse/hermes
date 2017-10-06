@@ -4,6 +4,7 @@ WORKDIR /usr/src/hermes
 
 RUN curl https://get.docker.com | bash -
 RUN pip install docker-compose
+RUN curl -sL https://cli.openfaas.com | bash -
 
 COPY setup.py .
 
