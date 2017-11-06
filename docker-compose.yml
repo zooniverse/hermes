@@ -1,10 +1,12 @@
-version: '2'
+version: '3.2'
 
 services:
   dev:
     build:
       context:  ./
       dockerfile: Dockerfile.dev
+      cache_from:
+        - zooniverse/hermes
     volumes:
       - ${HOME}/.hermes/:/root/.hermes/
       - ${HOME}/.aws/:/root/.aws/
@@ -26,6 +28,8 @@ services:
     build:
       context: ./
       dockerfile: Dockerfile.stable
+      cache_from:
+        - zooniverse/hermes
     volumes:
       - ${HOME}/.hermes/:/root/.hermes/
       - ${HOME}/.aws/:/root/.aws/
@@ -42,6 +46,8 @@ services:
     build:
       context:  ./
       dockerfile: Dockerfile.dev2
+      cache_from:
+        - zooniverse/hermes
     volumes:
       - ${HOME}/.hermes/:/root/.hermes/
       - ${HOME}/.aws/:/root/.aws/
@@ -58,6 +64,8 @@ services:
     build:
       context: ./
       dockerfile: Dockerfile.stable2
+      cache_from:
+        - zooniverse/hermes
     volumes:
       - ${HOME}/.hermes/:/root/.hermes/
       - ${HOME}/.aws/:/root/.aws/
