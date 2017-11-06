@@ -6,6 +6,7 @@ import sys
 
 import boto3
 import click
+import docker
 
 from paramiko.client import SSHClient, MissingHostKeyPolicy
 
@@ -74,6 +75,7 @@ class Manager(object):
                 self.stack = tag['Value']
                 break
         self.dns_name = instance['PublicDnsName']
+        self.docker_client = None
         self.ssh_client = None
         self._socat_installed = False
         self._docker_listening = False
@@ -222,3 +224,14 @@ class Manager(object):
 
         if hasattr(self, 'server_channel'):
             self.server_channel.close()
+
+    def init_docker_client(self):
+        if not self._docker_listening:
+            self.open_docker_socket()
+        self.docker_client = docker.from_env()
+
+    @property
+    def docker(self):
+        if not self.docker_client:
+            self.init_docker_client()
+        return self.docker_client
