@@ -40,11 +40,9 @@ def create(ctx, swarm_name, secret_name, secret_file, no_backup):
                 ACL='private',
                 Body=secret_data,
             )
-        click.echo(
-            manager.docker.secrets.create(
-                name=secret_name,
-                data=secret_data,
-            )
+        manager.docker.secrets.create(
+            name=secret_name,
+            data=secret_data,
         )
 
 @secrets.command()
