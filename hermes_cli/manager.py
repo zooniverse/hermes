@@ -145,8 +145,7 @@ class Manager(object):
 
     def install_socat(self):
         if self.execute("socat -V", echo=False) > 0:
-            self.execute("sudo apk update")
-            self.execute("sudo apk add socat")
+            self.execute("sudo apk add --no-cache socat")
         self._socat_installed = True
 
     def open_docker_socket(self):
