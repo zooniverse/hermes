@@ -13,6 +13,7 @@ def cli(ctx):
     ctx.config_file = os.path.join(ctx.config_dir, 'config.yml')
     ctx.config = {
         'ssh_key_filename': 'autodetect',
+        's3_config_bucket': '',
     }
 
     try:
