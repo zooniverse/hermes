@@ -6,7 +6,7 @@ services:
       context:  ./
       dockerfile: Dockerfile.dev
       cache_from:
-        - zooniverse/hermes
+        - zooniverse/hermes:dev
     volumes:
       - ${HOME}/.hermes/:/root/.hermes/
       - ${HOME}/.aws/:/root/.aws/
@@ -29,7 +29,7 @@ services:
       context: ./
       dockerfile: Dockerfile.stable
       cache_from:
-        - zooniverse/hermes
+        - zooniverse/hermes:stable
     volumes:
       - ${HOME}/.hermes/:/root/.hermes/
       - ${HOME}/.aws/:/root/.aws/
@@ -47,7 +47,7 @@ services:
       context:  ./
       dockerfile: Dockerfile.dev2
       cache_from:
-        - zooniverse/hermes
+        - zooniverse/hermes:dev-python2
     volumes:
       - ${HOME}/.hermes/:/root/.hermes/
       - ${HOME}/.aws/:/root/.aws/
@@ -65,7 +65,7 @@ services:
       context: ./
       dockerfile: Dockerfile.stable2
       cache_from:
-        - zooniverse/hermes
+        - zooniverse/hermes:stable-python2
     volumes:
       - ${HOME}/.hermes/:/root/.hermes/
       - ${HOME}/.aws/:/root/.aws/
