@@ -7,6 +7,21 @@ from hermes_cli.manager import Manager
 from hermes_cli.scripts.hermes import cli
 
 
+def secret_s3_path(swarm_name, secret_name):
+    return 'swarms/{}/secrets/{}'.format(swarm_name, secret_name)
+
+
+def s3_config_bucket(ctx):
+    config_bucket = ctx.parent.parent.config.get('s3_config_bucket')
+    if not config_bucket:
+        click.echo(
+            'No s3_config_bucket configured! Please run hermes configure',
+            err=True,
+        )
+        sys.exit(1)
+    return config_bucket
+
+
 @cli.group()
 def secrets():
     pass
@@ -20,13 +35,7 @@ def secrets():
 @click.option('-n', '--no-backup', is_flag=True)
 def create(ctx, swarm_name, secret_name, secret_file, no_backup):
     if not no_backup:
-        config_bucket = ctx.parent.parent.config.get('s3_config_bucket')
-        if not config_bucket:
-            click.echo(
-                'No s3_config_bucket configured! Please run hermes configure',
-                err=True,
-            )
-            sys.exit(1)
+        config_bucket = s3_config_bucket(ctx)
 
     secret_data = secret_file.read()
 
@@ -34,7 +43,7 @@ def create(ctx, swarm_name, secret_name, secret_file, no_backup):
         if not no_backup:
             boto3.resource('s3').Object(
                 config_bucket,
-                'swarms/{}/secrets/{}'.format(swarm_name, secret_name),
+                secret_s3_path(swarm_name, secret_name),
             ).put(
                 ServerSideEncryption='aws:kms',
                 ACL='private',
@@ -68,3 +77,21 @@ def rm(swarm_name, secret_id, force):
             )
         ):
             secret.remove()
+
+
+@secrets.command()
+@click.pass_context
+@click.argument('swarm-name')
+@click.argument('secret-id')
+def cat(ctx, swarm_name, secret_id):
+    with Manager.find(swarm_name) as manager:
+        secret = manager.docker.secrets.get(secret_id)
+        config_bucket = s3_config_bucket(ctx)
+        secret_data = boto3.resource('s3').Object(
+            config_bucket,
+            secret_s3_path(swarm_name, secret.name),
+        ).get()
+        click.echo(
+            secret_data['Body'].read(),
+            nl=False,
+        )
