@@ -2,12 +2,16 @@ import sys
 
 import boto3
 import click
+import dateutil
 
 from hermes_cli.manager import Manager
 from hermes_cli.scripts.hermes import cli
 
 
-def secret_s3_path(swarm_name, secret_name):
+s3 = boto3.resource('s3')
+
+
+def secret_s3_path(swarm_name, secret_name=''):
     return 'swarms/{}/secrets/{}'.format(swarm_name, secret_name)
 
 
@@ -41,7 +45,7 @@ def create(ctx, swarm_name, secret_name, secret_file, no_backup):
 
     with Manager.find(swarm_name) as manager:
         if not no_backup:
-            boto3.resource('s3').Object(
+            s3.Object(
                 config_bucket,
                 secret_s3_path(swarm_name, secret_name),
             ).put(
@@ -55,11 +59,44 @@ def create(ctx, swarm_name, secret_name, secret_file, no_backup):
         )
 
 @secrets.command()
+@click.pass_context
 @click.argument('swarm-name')
-def ls(swarm_name):
+@click.option('-b', '--all-backups', is_flag=True)
+def ls(ctx, swarm_name, all_backups):
+    config_bucket = s3_config_bucket(ctx)
+    backed_up_secrets = {}
+    output_secrets = {}
+
+    for s3_obj in s3.Bucket(config_bucket).objects.filter(
+        Prefix=secret_s3_path(swarm_name),
+    ):
+        secret_name = s3_obj.key.split('/')[-1]
+        backed_up_secrets[secret_name] = {
+            'id': '-',
+            'name': secret_name,
+            'backup': '-',
+            'modified': s3_obj.last_modified,
+        }
+
     with Manager.find(swarm_name) as manager:
         for secret in manager.docker.secrets.list():
-            click.echo("{}\t{}".format(secret.id, secret.name))
+            output_secrets[secret.name] = {
+                'id': secret.id,
+                'name': secret.name,
+                'backup': '*' if secret.name in backed_up_secrets else '!',
+                'modified': dateutil.parser.parse(secret.attrs['UpdatedAt']),
+            }
+
+    if all_backups:
+        backed_up_secrets.update(output_secrets)
+        output_secrets = backed_up_secrets
+
+    for secret in output_secrets.values():
+        click.echo(
+            "{backup} {id:<25}  {modified:%b %d %H:%M %Y %Z}  {name}".format(
+                **secret
+            ),
+        )
 
 
 @secrets.command()
@@ -87,7 +124,7 @@ def cat(ctx, swarm_name, secret_id):
     with Manager.find(swarm_name) as manager:
         secret = manager.docker.secrets.get(secret_id)
         config_bucket = s3_config_bucket(ctx)
-        secret_data = boto3.resource('s3').Object(
+        secret_data = s3.Object(
             config_bucket,
             secret_s3_path(swarm_name, secret.name),
         ).get()
