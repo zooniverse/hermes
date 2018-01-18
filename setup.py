@@ -17,6 +17,7 @@ setup(
         'paramiko',
         'boto3',
         'PyYAML',
+        'python-dateutil',
     ],
     entry_points='''
         [console_scripts]
