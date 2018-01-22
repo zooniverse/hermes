@@ -79,11 +79,11 @@ def get_backup(ctx, swarm_name, secret_name):
 
 
 @cli.group()
-def secrets():
+def secret():
     pass
 
 
-@secrets.command()
+@secret.command()
 @click.pass_context
 @click.argument('swarm-name')
 @click.argument('secret-name')
@@ -108,7 +108,7 @@ def create(ctx, swarm_name, secret_name, secret_file, no_backup):
         )
 
 
-@secrets.command()
+@secret.command()
 @click.pass_context
 @click.argument('swarm-name')
 @click.argument('secret-names', nargs=-1)
@@ -138,7 +138,7 @@ def restore(ctx, swarm_name, secret_names, restore_all):
     click.echo("Successfully restored {} secrets".format(count))
 
 
-@secrets.command()
+@secret.command()
 @click.pass_context
 @click.argument('swarm-name')
 @click.option('-b', '--all-backups', is_flag=True)
@@ -159,7 +159,7 @@ def ls(ctx, swarm_name, all_backups):
         )
 
 
-@secrets.command()
+@secret.command()
 @click.pass_context
 @click.argument('swarm-name')
 @click.argument('secret-names', nargs=-1)
@@ -195,7 +195,7 @@ def rm(ctx, swarm_name, secret_names, force):
                 secret.remove()
 
 
-@secrets.command()
+@secret.command()
 @click.pass_context
 @click.argument('swarm-name')
 @click.argument('secret-name')
