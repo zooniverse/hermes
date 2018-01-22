@@ -27,4 +27,4 @@ def cli(ctx):
 
 from hermes_cli.commands.configure import *
 from hermes_cli.commands.exec_command import *
-from hermes_cli.commands.secrets import *
+from hermes_cli.commands.secret import *
