@@ -105,6 +105,7 @@ class Manager(object):
             self.dns_name,
             username=username,
             key_filename=key_filename,
+            compress=True,
         )
 
     def disconnect_ssh(self):
