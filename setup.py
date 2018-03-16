@@ -15,9 +15,9 @@ setup(
         'Click',
         'docker',
         'paramiko',
-        'boto3',
+        'boto3<1.7',
         'PyYAML',
-        'python-dateutil',
+        'python-dateutil<2.7.0',
     ],
     entry_points='''
         [console_scripts]
